@@ -2,14 +2,20 @@ package com.marias.android.notes
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 
 import android.widget.TextView
 
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResult
+import androidx.fragment.app.setFragmentResultListener
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import java.util.*
+
+private const val REQUEST_KEY = "requestKey"
 
 class NotesFragment : Fragment() {
 
@@ -17,9 +23,10 @@ class NotesFragment : Fragment() {
         fun onNoteSelected(id: UUID)
     }
 
+    private val notesViewModel: NotesViewModel by viewModels()
     private lateinit var notesRecyclerView: RecyclerView
-    private val notes = NoteList.notes
-    private lateinit var adapter : NoteAdapter
+
+    private lateinit var adapter: NoteAdapter
     private var callback: Callback? = null
 
     override fun onAttach(context: Context) {
@@ -27,11 +34,14 @@ class NotesFragment : Fragment() {
         callback = context as Callback?
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setHasOptionsMenu(true)
 
+        setFragmentResultListener(REQUEST_KEY) { _, _ ->
+            notesViewModel.getNotes()
+        }
     }
 
     override fun onCreateView(
@@ -43,9 +53,18 @@ class NotesFragment : Fragment() {
         notesRecyclerView = view.findViewById(R.id.note_recycle_view)
         notesRecyclerView.layoutManager = LinearLayoutManager(context)
 
-
-
         return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        notesViewModel.notesLiveData.observe(viewLifecycleOwner) { notes ->
+            notes.let {
+                adapter = NoteAdapter(notes)
+                notesRecyclerView.adapter = adapter
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -56,23 +75,13 @@ class NotesFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val note = Note()
         return when (item.itemId) {
-
             R.id.add_note -> {
-
                 callback?.onNoteSelected(note.id)
-                notes.add(note)
+                notesViewModel.addNote(note)
                 return true
             }
             else -> super.onOptionsItemSelected(item)
-
         }
-
-    }
-
-    override fun onStart() {
-        super.onStart()
-        adapter = NoteAdapter(notes)
-        notesRecyclerView.adapter = adapter
     }
 
     private inner class NoteHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -87,12 +96,10 @@ class NotesFragment : Fragment() {
 
         val textView: TextView = itemView.findViewById(R.id.note_title)
 
-
         fun bind(note: Note) {
             this.note = note
             textView.text = note.title
         }
-
     }
 
     private inner class NoteAdapter(var noteList: List<Note>) : RecyclerView.Adapter<NoteHolder>() {
@@ -107,10 +114,7 @@ class NotesFragment : Fragment() {
         }
 
         override fun getItemCount() = noteList.size
-
-
     }
-
 
     companion object {
         fun newInstance(): NotesFragment {
