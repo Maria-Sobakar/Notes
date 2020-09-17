@@ -1,22 +1,19 @@
-package com.marias.android.notes
+package com.marias.android.notes.data.repository
 
 import android.content.Context
-import androidx.lifecycle.LiveData
-import androidx.room.Room
-import database.DatabaseBuilder
-import database.NoteDatabase
+import com.marias.android.notes.data.database.DatabaseBuilder
+import com.marias.android.notes.data.dto.Note
 import java.util.*
 
-private const val DATABASE_NAME = "Note_Database"
 
 class NoteRepository private constructor(context: Context) {
     private val database = DatabaseBuilder.getInstance(context)
     private val noteDAO = database.noteDAO()
 
     suspend fun getNotes() = noteDAO.getNotes()
-    suspend fun getNote(id:UUID) = noteDAO.getNote(id)
-    suspend fun addNote(note:Note) = noteDAO.addNote(note)
-    suspend fun updateNote(note: Note) = noteDAO.updateNote(note)
+    suspend fun getNote(id: UUID) = noteDAO.getNote(id)
+    suspend fun upsert(note: Note) = noteDAO.upsert(note)
+    suspend fun deleteNote(note: Note) = noteDAO.deleteNote(note)
 
     companion object {
         private var INSTANCE: NoteRepository? = null
@@ -31,6 +28,4 @@ class NoteRepository private constructor(context: Context) {
             return INSTANCE ?: throw IllegalStateException("CrimeRepository must be initialized")
         }
     }
-
-
 }

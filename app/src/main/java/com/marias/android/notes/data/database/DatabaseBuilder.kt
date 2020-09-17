@@ -1,14 +1,16 @@
-package database
+package com.marias.android.notes.data.database
 
 import android.content.Context
 import androidx.room.Room
 
-object DatabaseBuilder{
+
+object DatabaseBuilder {
+    private const val DATABASE_NAME = "note-database"
     private var instance: NoteDatabase? = null
 
-    fun getInstance(context: Context): NoteDatabase{
-        if (instance==null){
-            synchronized(NoteDatabase::class.java){
+    fun getInstance(context: Context): NoteDatabase {
+        if (instance == null) {
+            synchronized(NoteDatabase::class.java) {
                 instance = buildRoomDB(context)
             }
         }
@@ -19,6 +21,7 @@ object DatabaseBuilder{
         Room.databaseBuilder(
             context.applicationContext,
             NoteDatabase::class.java,
-            "note-database"
+            DATABASE_NAME
         ).build()
+
 }
