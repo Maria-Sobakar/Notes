@@ -4,33 +4,37 @@ package com.marias.android.notes
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResult
+import androidx.fragment.app.setFragmentResultListener
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import java.util.*
 
 private const val ARG_ID = "noteId"
+private const val REQUEST_KEY = "requestKey"
 
 class NoteFragment : Fragment() {
-    private val notes = NoteList.notes
-    private lateinit var note: Note
+
     private lateinit var titleEditText: EditText
     private lateinit var dateTextView: TextView
     private lateinit var noteTextField: EditText
 
+    private val viewModel: NoteViewModel by viewModels {
+        val id = arguments?.getSerializable(ARG_ID) as UUID
+        NoteViewModelFactory(id)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        notes.forEach{
-            val id = arguments?.getSerializable(ARG_ID) as UUID
-            if (it.id ==id){
-                note = it
-            }
-        }
+        setFragmentResult(REQUEST_KEY, Bundle())
     }
 
     override fun onCreateView(
@@ -45,56 +49,35 @@ class NoteFragment : Fragment() {
         noteTextField = view.findViewById(R.id.note_text) as EditText
 
         return view
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        titleEditText.setText(note.title)
-        dateTextView.text = note.date.toString()
-        noteTextField.setText(note.text)
 
+        viewModel.noteLiveData.observe(viewLifecycleOwner) { note ->
+            updateUI(note.title, note.date, note.text)
+        }
+    }
+
+    private fun updateUI(title: String, date: Date, text: String) {
+        titleEditText.setText(title)
+        dateTextView.text = date.toString()
+        noteTextField.setText(text)
     }
 
     override fun onStart() {
         super.onStart()
-        val titleChangeListener = object :TextWatcher{
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                note.title = s.toString()
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-
-            }
-
+        titleEditText.doOnTextChanged { text, _, _, _ ->
+            viewModel.onTitleUpdated(text.toString())
         }
-        val textChangeListener = object :TextWatcher{
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                note.text = s.toString()
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-
-            }
-
+        noteTextField.doOnTextChanged { text, _, _, _ ->
+            viewModel.onTextUpdated(text.toString())
         }
-        titleEditText.addTextChangedListener(titleChangeListener)
-        noteTextField.addTextChangedListener(textChangeListener)
-
-
     }
 
-
     companion object {
-        fun newInstance(id:UUID): NoteFragment{
+        fun newInstance(id: UUID): NoteFragment {
             val arg = Bundle().apply {
                 putSerializable(ARG_ID, id)
             }
