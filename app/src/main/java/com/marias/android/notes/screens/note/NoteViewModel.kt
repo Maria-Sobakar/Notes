@@ -16,6 +16,10 @@ class NoteViewModel(val id: UUID) : ViewModel() {
         val liveData = MutableLiveData<Note>()
         viewModelScope.launch {
             val note = noteRepository.getNote(id)
+            if (note.archived)
+                isNoteArchivedLiveData.value = true
+            else isNoteArchivedLiveData.value = false
+
             this@NoteViewModel.note = note
             liveData.value = note
         }
@@ -23,6 +27,7 @@ class NoteViewModel(val id: UUID) : ViewModel() {
     }
 
     val closeLiveData = MutableLiveData<Boolean>()
+    val isNoteArchivedLiveData = MutableLiveData<Boolean>()
     private val noteRepository = NoteRepository.get()
     private lateinit var note: Note
 
@@ -52,6 +57,16 @@ class NoteViewModel(val id: UUID) : ViewModel() {
             noteRepository.deleteNote(note)
             closeLiveData.value = true
         }
+    }
+
+    fun toArchive() {
+        note.archived = true
+        updateNote()
+    }
+
+    fun fromArchive(){
+        note.archived = false
+        updateNote()
     }
 
     class NoteViewModelFactory(val id: UUID) : ViewModelProvider.Factory {

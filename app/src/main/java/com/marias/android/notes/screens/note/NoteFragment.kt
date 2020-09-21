@@ -6,7 +6,6 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import androidx.core.widget.doAfterTextChanged
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
@@ -17,6 +16,9 @@ import java.util.*
 
 class NoteFragment : Fragment(R.layout.fragment_note) {
 
+    private lateinit var toArchiveItem: MenuItem
+    private lateinit var fromArchiveItem: MenuItem
+
     private val viewModel: NoteViewModel by viewModels {
         val id = arguments?.getSerializable(ARG_ID) as UUID
         NoteViewModel.NoteViewModelFactory(id)
@@ -24,7 +26,8 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setFragmentResult(REQUEST_KEY, Bundle())
+        setFragmentResult(ACTIVE_REQUEST_KEY, Bundle())
+        setFragmentResult(ARCHIVE_REQUEST_KEY, Bundle())
         setHasOptionsMenu(true)
     }
 
@@ -36,7 +39,7 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
         }
 
         viewModel.closeLiveData.observe(viewLifecycleOwner) { value ->
-            if (value == true) {
+            if (value) {
                 activity?.supportFragmentManager?.popBackStack()
             }
         }
@@ -64,19 +67,48 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.delete_note, menu)
+        inflater.inflate(R.menu.note_screen_menu, menu)
+
+        toArchiveItem = menu.findItem(R.id.note_screen_to_archive)
+        fromArchiveItem = menu.findItem(R.id.note_screen_from_archive)
+
+        viewModel.isNoteArchivedLiveData.observe(viewLifecycleOwner) { value ->
+            if (value) {
+                toArchiveItem.isVisible = false
+                fromArchiveItem.isVisible = true
+            } else {
+                toArchiveItem.isVisible = true
+                fromArchiveItem.isVisible = false
+            }
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.delete_note) {
-            viewModel.deleteNote()
+        return when (item.itemId) {
+            R.id.note_screen_delete_note -> {
+                viewModel.deleteNote()
+                true
+            }
+            R.id.note_screen_to_archive -> {
+                viewModel.toArchive()
+                toArchiveItem.isVisible = false
+                fromArchiveItem.isVisible = true
+                true
+            }
+            R.id.note_screen_from_archive -> {
+                viewModel.fromArchive()
+                toArchiveItem.isVisible = true
+                fromArchiveItem.isVisible = false
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
-        return super.onOptionsItemSelected(item)
     }
 
     companion object {
         private const val ARG_ID = "noteId"
-        private const val REQUEST_KEY = "requestKey"
+        private const val ACTIVE_REQUEST_KEY = "activeRequestKey"
+        private const val ARCHIVE_REQUEST_KEY = "archiveRequestKey"
 
         fun newInstance(id: UUID): NoteFragment {
             val arg = Bundle().apply {

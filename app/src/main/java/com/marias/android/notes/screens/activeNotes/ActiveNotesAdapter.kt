@@ -1,36 +1,28 @@
-package com.marias.android.notes.screens.notes
+package com.marias.android.notes.screens.activeNotes
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
-import android.view.OrientationEventListener
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.PopupMenu
 import android.widget.TextView
-import androidx.annotation.RestrictTo
 import androidx.recyclerview.widget.RecyclerView
 import com.marias.android.notes.R
 import com.marias.android.notes.data.dto.Note
-import com.marias.android.notes.data.repository.NoteRepository
-import kotlinx.android.synthetic.main.item_note.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
 
-class NoteAdapter(val context: Context?, val notes: List<Note>, val listener: Listener) :
-    RecyclerView.Adapter<NoteAdapter.NoteHolder>() {
+class ActiveNotesAdapter(val context: Context?, val notes: List<Note>, val listener: Listener) :
+    RecyclerView.Adapter<ActiveNotesAdapter.ActiveNotesHolder>() {
     var noteList = notes
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ActiveNotesHolder {
         val inflater = LayoutInflater.from(context)
         val view = inflater.inflate(R.layout.item_note, parent, false)
 
-        return NoteHolder(view)
+        return ActiveNotesHolder(view)
     }
 
-    override fun onBindViewHolder(holder: NoteHolder, position: Int) {
+    override fun onBindViewHolder(holder: ActiveNotesHolder, position: Int) {
         holder.bind(noteList[position])
     }
 
@@ -40,13 +32,13 @@ class NoteAdapter(val context: Context?, val notes: List<Note>, val listener: Li
 
     override fun getItemCount() = noteList.size
 
-    inner class NoteHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class ActiveNotesHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         private lateinit var note: Note
 
         init {
             itemView.setOnClickListener {
-                (context as NotesFragment.Callback?)?.onNoteSelected(note.id)
+                (context as ActiveNotesFragment.Callback?)?.onNoteSelected(note.id)
             }
             itemView.setOnLongClickListener {
                 it.isSelected = true
@@ -70,19 +62,19 @@ class NoteAdapter(val context: Context?, val notes: List<Note>, val listener: Li
 
         fun showMenu(anchor: View?, note: Note) {
             val popup = PopupMenu(context, anchor)
-            popup.menuInflater.inflate(R.menu.note_menu, popup.menu)
+            popup.menuInflater.inflate(R.menu.notes_screen_delete_note, popup.menu)
             popup.show()
             popup.setOnMenuItemClickListener {
-                if (it.itemId == R.id.note_menu_delete) {
+                if (it.itemId == R.id.notes_screen_delete_note) {
                     listener.onDeleteNoteClicked(note)
                     true
                 } else false
             }
-
         }
     }
-
-    interface Listener {
-        fun onDeleteNoteClicked(note: Note)
-    }
 }
+
+interface Listener {
+    fun onDeleteNoteClicked(note: Note)
+}
+

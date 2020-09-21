@@ -10,7 +10,8 @@ class NoteRepository private constructor(context: Context) {
     private val database = DatabaseBuilder.getInstance(context)
     private val noteDAO = database.noteDAO()
 
-    suspend fun getNotes() = noteDAO.getNotes()
+    suspend fun getActiveNotes() = noteDAO.getActiveNotes()
+    suspend fun getArchivedNotes() = noteDAO.getArchivedNotes()
     suspend fun getNote(id: UUID) = noteDAO.getNote(id)
     suspend fun upsert(note: Note) = noteDAO.upsert(note)
     suspend fun deleteNote(note: Note) = noteDAO.deleteNote(note)
