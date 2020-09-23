@@ -6,15 +6,12 @@ import androidx.room.Room
 
 object DatabaseBuilder {
     private const val DATABASE_NAME = "note-database"
-    private var instance: NoteDatabase? = null
+    lateinit var instance: NoteDatabase
 
-    fun getInstance(context: Context): NoteDatabase {
-        if (instance == null) {
-            synchronized(NoteDatabase::class.java) {
-                instance = buildRoomDB(context)
-            }
+    fun initialize(context: Context) {
+        synchronized(NoteDatabase::class.java) {
+            instance = buildRoomDB(context)
         }
-        return instance!!
     }
 
     private fun buildRoomDB(context: Context) =

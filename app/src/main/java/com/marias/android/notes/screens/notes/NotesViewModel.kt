@@ -1,23 +1,21 @@
 package com.marias.android.notes.screens.notes
 
 import android.content.Context
-import android.widget.PopupMenu
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.marias.android.notes.R
 import com.marias.android.notes.data.repository.NoteRepository
 import com.marias.android.notes.data.dto.Note
-import com.marias.android.notes.screens.note.NoteViewModel
+import com.marias.android.notes.utils.Event
 import kotlinx.coroutines.launch
 import java.util.*
 
-class NotesViewModel : ViewModel() {
+class NotesViewModel(context: Context) : ViewModel() {
 
-    val newNoteLiveData = MutableLiveData<UUID>()
+    val openNoteLiveData = MutableLiveData<Event<UUID>>()
     val notesLiveData = MutableLiveData<List<Note>>()
-    private val noteRepository = NoteRepository.get()
+    private val noteRepository = NoteRepository(context)
 
     init {
         viewModelScope.launch {
@@ -36,7 +34,7 @@ class NotesViewModel : ViewModel() {
     fun upsert(note: Note) {
         viewModelScope.launch {
             noteRepository.upsert(note)
-            newNoteLiveData.value = note.id
+            openNoteLiveData.value = Event(note.id)
         }
     }
 
@@ -44,6 +42,12 @@ class NotesViewModel : ViewModel() {
         viewModelScope.launch {
             noteRepository.deleteNote(note)
             getNotes()
+        }
+    }
+
+    class NotesViewModelFactory(val context: Context) : ViewModelProvider.Factory {
+        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+            return NotesViewModel(context) as T
         }
     }
 }

@@ -6,8 +6,8 @@ import com.marias.android.notes.data.dto.Note
 import java.util.*
 
 
-class NoteRepository private constructor(context: Context) {
-    private val database = DatabaseBuilder.getInstance(context)
+class NoteRepository constructor(context: Context) {
+    private val database = DatabaseBuilder.instance
     private val noteDAO = database.noteDAO()
 
     suspend fun getNotes() = noteDAO.getNotes()
@@ -15,17 +15,10 @@ class NoteRepository private constructor(context: Context) {
     suspend fun upsert(note: Note) = noteDAO.upsert(note)
     suspend fun deleteNote(note: Note) = noteDAO.deleteNote(note)
 
-    companion object {
-        private var INSTANCE: NoteRepository? = null
-
-        fun initialize(context: Context) {
-            if (INSTANCE == null) {
-                INSTANCE = NoteRepository(context)
-            }
-        }
-
-        fun get(): NoteRepository {
-            return INSTANCE ?: throw IllegalStateException("CrimeRepository must be initialized")
-        }
-    }
+//    companion object {
+//        private var INSTANCE = NoteRepository(context)
+//        fun get(): NoteRepository {
+//            return INSTANCE ?: throw IllegalStateException("CrimeRepository must be initialized")
+//        }
+//    }
 }

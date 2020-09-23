@@ -6,12 +6,12 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import androidx.core.widget.doAfterTextChanged
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import com.marias.android.notes.R
+import com.marias.android.notes.data.dto.toFormat
 import kotlinx.android.synthetic.main.fragment_note.*
 import java.util.*
 
@@ -19,7 +19,7 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
 
     private val viewModel: NoteViewModel by viewModels {
         val id = arguments?.getSerializable(ARG_ID) as UUID
-        NoteViewModel.NoteViewModelFactory(id)
+        NoteViewModel.NoteViewModelFactory(requireContext(), id)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,23 +32,15 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.noteLiveData.observe(viewLifecycleOwner) { note ->
-            updateUI(note.title, note.dateFormat(), note.text)
+            noteETTitle.setText(note.title)
+            noteETText.setText(note.text)
+            noteTVDate.text = note.date.toFormat()
         }
-
         viewModel.closeLiveData.observe(viewLifecycleOwner) { value ->
-            if (value == true) {
+            if (value) {
                 activity?.supportFragmentManager?.popBackStack()
             }
         }
-    }
-
-    private fun updateUI(title: String, date: String, text: String) {
-
-        noteETTitle.setText(title)
-
-        noteETText.setText(text)
-
-        noteTVDate.text = date
     }
 
     override fun onStart() {
@@ -79,11 +71,11 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
         private const val REQUEST_KEY = "requestKey"
 
         fun newInstance(id: UUID): NoteFragment {
-            val arg = Bundle().apply {
-                putSerializable(ARG_ID, id)
-            }
             return NoteFragment().apply {
-                arguments = arg
+                arguments = Bundle().apply {
+                    putSerializable(ARG_ID, id)
+                }
+
             }
         }
     }

@@ -15,10 +15,11 @@ import java.util.*
 
 class NotesFragment : Fragment(R.layout.fragment_notes), NoteAdapter.Listener {
 
-    private val notesViewModel: NotesViewModel by viewModels()
+    private val notesViewModel: NotesViewModel by viewModels{
+        NotesViewModel.NotesViewModelFactory(requireContext())
+    }
     private lateinit var adapter: NoteAdapter
     private var callback: Callback? = null
-    private var openNote = false
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -47,20 +48,20 @@ class NotesFragment : Fragment(R.layout.fragment_notes), NoteAdapter.Listener {
             }
         }
 
-        notesViewModel.newNoteLiveData.observe(viewLifecycleOwner) { id ->
-            if (openNote) {
-                openNote = false
-                callback?.onNoteSelected(id)
+        notesViewModel.openNoteLiveData.observe(viewLifecycleOwner) {
+            it.getIdIfNotHandled()?.let {
+                callback?.onNoteSelected(it)
             }
+
+
         }
         addNoteFloatingActionButton.setOnClickListener {
             val note = Note()
-            openNote = true
             notesViewModel.upsert(note)
         }
     }
 
-    override fun onDeleteNoteClicked(note: Note) {
+    override fun onDeleteNoteClick(note: Note) {
         notesViewModel.deleteNote(note)
     }
 

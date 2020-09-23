@@ -13,6 +13,5 @@ data class Note(
     var title: String = "",
     var date: Date = Date(),
     var text: String = ""
-){
-    fun dateFormat() = DateFormat.getDateInstance(DateFormat.MEDIUM).format(date)
-}
+)
+    fun Date.toFormat():String = DateFormat.getDateInstance(DateFormat.MEDIUM).format(this)

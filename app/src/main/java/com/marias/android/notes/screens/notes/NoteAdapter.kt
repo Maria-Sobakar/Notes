@@ -19,9 +19,8 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
-class NoteAdapter(val context: Context?, val notes: List<Note>, val listener: Listener) :
+class NoteAdapter(val context: Context?, var noteList: List<Note>, val listener: Listener) :
     RecyclerView.Adapter<NoteAdapter.NoteHolder>() {
-    var noteList = notes
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteHolder {
         val inflater = LayoutInflater.from(context)
@@ -74,7 +73,7 @@ class NoteAdapter(val context: Context?, val notes: List<Note>, val listener: Li
             popup.show()
             popup.setOnMenuItemClickListener {
                 if (it.itemId == R.id.note_menu_delete) {
-                    listener.onDeleteNoteClicked(note)
+                    listener.onDeleteNoteClick(note)
                     true
                 } else false
             }
@@ -83,6 +82,6 @@ class NoteAdapter(val context: Context?, val notes: List<Note>, val listener: Li
     }
 
     interface Listener {
-        fun onDeleteNoteClicked(note: Note)
+        fun onDeleteNoteClick(note: Note)
     }
 }
