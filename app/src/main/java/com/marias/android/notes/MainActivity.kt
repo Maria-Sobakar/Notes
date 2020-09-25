@@ -2,42 +2,30 @@ package com.marias.android.notes
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
 import com.marias.android.notes.screens.activeNotes.ActiveNotesFragment
 import com.marias.android.notes.screens.archiveNotes.ArchiveNotesFragment
 import com.marias.android.notes.screens.note.NoteFragment
 import java.util.*
 
 class MainActivity : AppCompatActivity(R.layout.activity_main), ActiveNotesFragment.Callback {
+    private lateinit var navController: NavController
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val fragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
-
-        if (fragment == null) {
-            val newFragment = ActiveNotesFragment.newInstance()
-
-            supportFragmentManager
-                .beginTransaction()
-                .add(R.id.fragment_container, newFragment)
-                .commit()
-        }
+        navController = Navigation.findNavController(this, R.id.navigation_host_fragment)
     }
 
     override fun onNoteSelected(id: UUID) {
-        val fragment = NoteFragment.newInstance(id)
-        supportFragmentManager
-            .beginTransaction()
-            .replace(R.id.fragment_container, fragment)
-            .addToBackStack(null)
-            .commit()
+        val arg = Bundle().apply {
+            putSerializable(NoteFragment.ARG_ID, id)
+        }
+        navController.navigate(R.id.noteFragment, arg)
     }
 
     override fun onArchiveScreenSelected() {
-        val fragment = ArchiveNotesFragment.newInstance()
-        supportFragmentManager
-            .beginTransaction()
-            .replace(R.id.fragment_container, fragment)
-            .addToBackStack(null)
-            .commit()
+        navController.navigate(R.id.archiveNotesFragment)
     }
 }

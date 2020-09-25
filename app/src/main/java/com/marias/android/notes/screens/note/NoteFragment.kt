@@ -35,7 +35,9 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.noteLiveData.observe(viewLifecycleOwner) { note ->
-            updateUI(note.title, note.dateFormat(), note.text)
+            noteETTitle.setText(note.title)
+            noteETText.setText(note.text)
+            noteTVDate.text = note.dateFormat()
         }
 
         viewModel.closeLiveData.observe(viewLifecycleOwner) { value ->
@@ -43,15 +45,6 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
                 activity?.supportFragmentManager?.popBackStack()
             }
         }
-    }
-
-    private fun updateUI(title: String, date: String, text: String) {
-
-        noteETTitle.setText(title)
-
-        noteETText.setText(text)
-
-        noteTVDate.text = date
     }
 
     override fun onStart() {
@@ -106,17 +99,8 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
     }
 
     companion object {
-        private const val ARG_ID = "noteId"
+        const val ARG_ID = "noteId"
         private const val ACTIVE_REQUEST_KEY = "activeRequestKey"
         private const val ARCHIVE_REQUEST_KEY = "archiveRequestKey"
-
-        fun newInstance(id: UUID): NoteFragment {
-            val arg = Bundle().apply {
-                putSerializable(ARG_ID, id)
-            }
-            return NoteFragment().apply {
-                arguments = arg
-            }
-        }
     }
 }

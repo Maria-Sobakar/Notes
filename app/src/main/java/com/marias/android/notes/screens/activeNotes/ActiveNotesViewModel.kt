@@ -5,12 +5,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.marias.android.notes.data.repository.NoteRepository
 import com.marias.android.notes.data.dto.Note
+import com.marias.android.notes.utils.Event
 import kotlinx.coroutines.launch
 import java.util.*
 
 class ActiveNotesViewModel : ViewModel() {
 
-    val newNoteLiveData = MutableLiveData<UUID>()
+    val newNoteLiveData = MutableLiveData<Event<UUID>>()
     val notesLiveData = MutableLiveData<List<Note>>()
     private val noteRepository = NoteRepository.get()
 
@@ -31,7 +32,7 @@ class ActiveNotesViewModel : ViewModel() {
     fun upsert(note: Note) {
         viewModelScope.launch {
             noteRepository.upsert(note)
-            newNoteLiveData.value = note.id
+            newNoteLiveData.value = Event(note.id)
         }
     }
 

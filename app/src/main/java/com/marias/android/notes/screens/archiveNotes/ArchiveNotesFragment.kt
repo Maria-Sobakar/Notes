@@ -16,7 +16,7 @@ import com.marias.android.notes.screens.activeNotes.ActiveNotesFragment
 import kotlinx.android.synthetic.main.fragment_notes.*
 
 
-class ArchiveNotesFragment: Fragment(R.layout.fragment_notes), ArchiveNotesAdapter.Listener {
+class ArchiveNotesFragment : Fragment(R.layout.fragment_notes), ArchiveNotesAdapter.Listener {
 
     private val viewModel: ArchiveNotesViewModel by viewModels()
     private lateinit var adapter: ArchiveNotesAdapter
@@ -58,9 +58,5 @@ class ArchiveNotesFragment: Fragment(R.layout.fragment_notes), ArchiveNotesAdapt
 
     companion object {
         private const val ARCHIVE_REQUEST_KEY = "archiveRequestKey"
-
-        fun newInstance(): ArchiveNotesFragment {
-            return ArchiveNotesFragment()
-        }
     }
 }

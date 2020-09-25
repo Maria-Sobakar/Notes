@@ -18,7 +18,6 @@ class ActiveNotesFragment : Fragment(R.layout.fragment_notes), Listener {
     private val viewModel: ActiveNotesViewModel by viewModels()
     private lateinit var adapter: ActiveNotesAdapter
     private var callback: Callback? = null
-    private var openNote = false
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -47,20 +46,17 @@ class ActiveNotesFragment : Fragment(R.layout.fragment_notes), Listener {
             }
         }
 
-        viewModel.newNoteLiveData.observe(viewLifecycleOwner) { id ->
-            if (openNote) {
-                openNote = false
-                callback?.onNoteSelected(id)
+        viewModel.newNoteLiveData.observe(viewLifecycleOwner) {
+            it.getContentIfNotHandled()?.let {
+                callback?.onNoteSelected(it)
             }
         }
         addNoteFloatingActionButton.setOnClickListener {
             val note = Note()
-            openNote = true
             viewModel.upsert(note)
         }
         bottomAppBar.setNavigationOnClickListener {
             callback?.onArchiveScreenSelected()
-
         }
     }
 
@@ -70,10 +66,6 @@ class ActiveNotesFragment : Fragment(R.layout.fragment_notes), Listener {
 
     companion object {
         private const val ACTIVE_REQUEST_KEY = "activeRequestKey"
-
-        fun newInstance(): ActiveNotesFragment {
-            return ActiveNotesFragment()
-        }
     }
 
     interface Callback {
