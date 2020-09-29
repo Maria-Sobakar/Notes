@@ -10,6 +10,7 @@ import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
+import androidx.navigation.Navigation
 import com.marias.android.notes.R
 import kotlinx.android.synthetic.main.fragment_note.*
 import java.util.*
@@ -42,7 +43,8 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
 
         viewModel.closeLiveData.observe(viewLifecycleOwner) { value ->
             if (value) {
-                activity?.supportFragmentManager?.popBackStack()
+               val navController = Navigation.findNavController(requireActivity(), R.id.navigation_host_fragment)
+                navController.popBackStack()
             }
         }
     }

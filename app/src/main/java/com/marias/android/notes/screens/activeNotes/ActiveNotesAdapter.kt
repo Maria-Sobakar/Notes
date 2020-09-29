@@ -11,9 +11,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.marias.android.notes.R
 import com.marias.android.notes.data.dto.Note
 
-class ActiveNotesAdapter(val context: Context?, val notes: List<Note>, val listener: Listener) :
+class ActiveNotesAdapter(val context: Context?, var noteList: List<Note>, val listener: Listener) :
     RecyclerView.Adapter<ActiveNotesAdapter.ActiveNotesHolder>() {
-    var noteList = notes
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ActiveNotesHolder {
         val inflater = LayoutInflater.from(context)

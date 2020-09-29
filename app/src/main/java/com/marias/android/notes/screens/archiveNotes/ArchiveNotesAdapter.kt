@@ -14,11 +14,9 @@ import com.marias.android.notes.screens.activeNotes.ActiveNotesFragment
 
 class ArchiveNotesAdapter(
     val context: Context?,
-    val notes: List<Note>,
+    var noteList: List<Note>,
     val listener: Listener
 ) : RecyclerView.Adapter<ArchiveNotesAdapter.ArchiveNotesHolder>() {
-
-    var noteList = notes
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArchiveNotesHolder {
         val inflater = LayoutInflater.from(context)

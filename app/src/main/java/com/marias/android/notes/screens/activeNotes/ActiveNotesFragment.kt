@@ -40,10 +40,8 @@ class ActiveNotesFragment : Fragment(R.layout.fragment_notes), Listener {
         notesRecyclerView.layoutManager = GridLayoutManager(context, columnCount)
 
         viewModel.notesLiveData.observe(viewLifecycleOwner) { notes ->
-            notes.let {
                 adapter.noteList = notes
                 notesRecyclerView.adapter = adapter
-            }
         }
 
         viewModel.newNoteLiveData.observe(viewLifecycleOwner) {
