@@ -14,11 +14,4 @@ class NoteRepository constructor(context: Context) {
     suspend fun getNote(id: UUID) = noteDAO.getNote(id)
     suspend fun upsert(note: Note) = noteDAO.upsert(note)
     suspend fun deleteNote(note: Note) = noteDAO.deleteNote(note)
-
-//    companion object {
-//        private var INSTANCE = NoteRepository(context)
-//        fun get(): NoteRepository {
-//            return INSTANCE ?: throw IllegalStateException("CrimeRepository must be initialized")
-//        }
-//    }
 }

@@ -5,9 +5,5 @@
         <item name="colorPrimary">@color/colorLightOlive</item>
         <item name="colorPrimaryDark">@color/colorDarkOlive</item>
         <item name="colorAccent">@color/colorWhite</item>
-
     </style>
-
-
-
 </resources>
