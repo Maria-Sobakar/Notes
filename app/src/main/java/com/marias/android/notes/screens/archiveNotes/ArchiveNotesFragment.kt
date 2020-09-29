@@ -20,7 +20,9 @@ import kotlinx.android.synthetic.main.fragment_notes.*
 
 class ArchiveNotesFragment : Fragment(R.layout.fragment_notes), ArchiveNotesAdapter.Listener {
 
-    private val viewModel: ArchiveNotesViewModel by viewModels()
+    private val viewModel: ArchiveNotesViewModel by viewModels{
+        ArchiveNotesViewModelFactory(requireContext())
+    }
     private lateinit var adapter: ArchiveNotesAdapter
     private var callback: ActiveNotesFragment.Callback? = null
 
