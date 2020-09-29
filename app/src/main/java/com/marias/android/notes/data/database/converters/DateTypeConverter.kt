@@ -15,6 +15,4 @@ class DateTypeConverter{
             Date(it)
         }
     }
-
-
 }
