@@ -1,7 +1,5 @@
 package com.marias.android.notes.screens.note
 
-import android.content.Context
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -11,13 +9,13 @@ import com.marias.android.notes.data.dto.Note
 import kotlinx.coroutines.launch
 import java.util.*
 
-class NoteViewModel(val context: Context, val id: UUID) : ViewModel() {
+class NoteViewModel(private val noteRepository: NoteRepository, val id: UUID) : ViewModel() {
 
     val noteLiveData by lazy {
         val liveData = MutableLiveData<Note>()
         viewModelScope.launch {
             val note = noteRepository.getNote(id)
-            isNoteArchivedLiveData.value = note.archived
+            isNoteArchivedLiveData.value = note.isArchived
             this@NoteViewModel.note = note
             liveData.value = note
         }
@@ -25,12 +23,10 @@ class NoteViewModel(val context: Context, val id: UUID) : ViewModel() {
     }
 
     val closeLiveData = MutableLiveData<Boolean>()
-    private val noteRepository = NoteRepository(context)
     val isNoteArchivedLiveData = MutableLiveData<Boolean>()
-    private lateinit var note: Note
+    lateinit var note: Note
 
-    private fun updateNote() {
-
+     fun updateNote() {
         viewModelScope.launch {
             if (note.title.isEmpty() && note.text.isEmpty()) {
                 noteRepository.deleteNote(note)
@@ -58,18 +54,20 @@ class NoteViewModel(val context: Context, val id: UUID) : ViewModel() {
     }
 
     fun toArchive() {
-        note.archived = true
+        note.isArchived = true
         updateNote()
+        isNoteArchivedLiveData.value = note.isArchived
     }
 
     fun fromArchive() {
-        note.archived = false
+        note.isArchived = false
         updateNote()
+        isNoteArchivedLiveData.value = note.isArchived
     }
 
-    class NoteViewModelFactory(val context: Context, val id: UUID) : ViewModelProvider.Factory {
+    class NoteViewModelFactory(private val noteRepository: NoteRepository, val id: UUID) : ViewModelProvider.Factory {
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            return NoteViewModel(context, id) as T
+            return NoteViewModel(noteRepository, id) as T
         }
     }
 }

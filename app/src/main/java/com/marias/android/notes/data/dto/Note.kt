@@ -11,7 +11,7 @@ data class Note(
     @PrimaryKey val id: UUID = UUID.randomUUID(),
     var title: String = "",
     var date: Date = Date(),
-    var archived: Boolean = false,
+    var isArchived: Boolean = false,
     var text: String = ""
 )
     fun Date.toFormat():String = DateFormat.getDateInstance(DateFormat.MEDIUM).format(this)
