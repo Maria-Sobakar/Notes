@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.marias.android.notes.R
 import com.marias.android.notes.data.dto.Note
+import java.lang.RuntimeException
 
 class ActiveNotesAdapter(val context: Context?, var noteList: List<Note>, val listener: Listener) :
     RecyclerView.Adapter<ActiveNotesAdapter.ActiveNotesHolder>() {
@@ -37,12 +38,7 @@ class ActiveNotesAdapter(val context: Context?, var noteList: List<Note>, val li
 
         init {
             itemView.setOnClickListener {
-                (context as ActiveNotesFragment.Callback?)?.onNoteSelected(note.id)
-            }
-            itemView.setOnLongClickListener {
-                it.isSelected = true
-
-                true
+           (context as ActiveNotesFragment.Callback?)?.onNoteSelected(note.id)
             }
             val noteIbDelete = itemView.findViewById<ImageButton>(R.id.noteIbDelete)
             noteIbDelete.setOnClickListener {
