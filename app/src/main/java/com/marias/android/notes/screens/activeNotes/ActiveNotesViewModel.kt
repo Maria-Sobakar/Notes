@@ -1,4 +1,5 @@
-package com.marias.android.notes.screens.notes
+package com.marias.android.notes.screens.activeNotes
+
 
 import android.content.Context
 import androidx.lifecycle.MutableLiveData
@@ -11,7 +12,7 @@ import com.marias.android.notes.utils.Event
 import kotlinx.coroutines.launch
 import java.util.*
 
-class NotesViewModel(context: Context) : ViewModel() {
+class ActiveNotesViewModel(context: Context) : ViewModel() {
 
     val openNoteLiveData = MutableLiveData<Event<UUID>>()
     val notesLiveData = MutableLiveData<List<Note>>()
@@ -19,14 +20,14 @@ class NotesViewModel(context: Context) : ViewModel() {
 
     init {
         viewModelScope.launch {
-            val notes = noteRepository.getNotes()
+            val notes = noteRepository.getActiveNotes()
             notesLiveData.value = notes
         }
     }
 
     fun getNotes() {
         viewModelScope.launch {
-            val notes = noteRepository.getNotes()
+            val notes = noteRepository.getActiveNotes()
             notesLiveData.value = notes
         }
     }
@@ -44,10 +45,9 @@ class NotesViewModel(context: Context) : ViewModel() {
             getNotes()
         }
     }
-
-    class NotesViewModelFactory(val context: Context) : ViewModelProvider.Factory {
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            return NotesViewModel(context) as T
-        }
+}
+class ActiveNotesViewModelFactory(val context: Context) : ViewModelProvider.Factory {
+    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        return ActiveNotesViewModel(context) as T
     }
 }

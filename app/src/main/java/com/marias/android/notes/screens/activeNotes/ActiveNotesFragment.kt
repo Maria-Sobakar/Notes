@@ -1,4 +1,4 @@
-package com.marias.android.notes.screens.notes
+package com.marias.android.notes.screens.activeNotes
 
 import android.content.Context
 import android.content.res.Configuration
@@ -13,12 +13,13 @@ import com.marias.android.notes.data.dto.Note
 import kotlinx.android.synthetic.main.fragment_notes.*
 import java.util.*
 
-class NotesFragment : Fragment(R.layout.fragment_notes), NoteAdapter.Listener {
+class ActiveNotesFragment : Fragment(R.layout.fragment_notes), Listener {
 
-    private val notesViewModel: NotesViewModel by viewModels{
-        NotesViewModel.NotesViewModelFactory(requireContext())
+    private val viewModel: ActiveNotesViewModel by viewModels {
+        ActiveNotesViewModelFactory(requireContext())
     }
-    private lateinit var adapter: NoteAdapter
+    private lateinit var adapter: ActiveNotesAdapter
+
     private var callback: Callback? = null
 
     override fun onAttach(context: Context) {
@@ -29,9 +30,9 @@ class NotesFragment : Fragment(R.layout.fragment_notes), NoteAdapter.Listener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        adapter = NoteAdapter(context, emptyList<Note>(), this)
-        setFragmentResultListener(REQUEST_KEY) { _, _ ->
-            notesViewModel.getNotes()
+        adapter = ActiveNotesAdapter(context, emptyList(), this)
+        setFragmentResultListener(ACTIVE_REQUEST_KEY) { _, _ ->
+            viewModel.getNotes()
         }
     }
 
@@ -41,39 +42,38 @@ class NotesFragment : Fragment(R.layout.fragment_notes), NoteAdapter.Listener {
         val columnCount = if (orientation == Configuration.ORIENTATION_PORTRAIT) 2 else 5
         notesRecyclerView.layoutManager = GridLayoutManager(context, columnCount)
 
-        notesViewModel.notesLiveData.observe(viewLifecycleOwner) { notes ->
-            notes.let {
-                adapter.noteList = notes
-                notesRecyclerView.adapter = adapter
-            }
+        viewModel.notesLiveData.observe(viewLifecycleOwner) { notes ->
+            adapter.noteList = notes
+            notesRecyclerView.adapter = adapter
         }
 
-        notesViewModel.openNoteLiveData.observe(viewLifecycleOwner) {
-            it.getIdIfNotHandled()?.let {
+        viewModel.openNoteLiveData.observe(viewLifecycleOwner) {
+            it.getContentIfNotHandled()?.let {
                 callback?.onNoteSelected(it)
             }
-
-
         }
+
         addNoteFloatingActionButton.setOnClickListener {
             val note = Note()
-            notesViewModel.upsert(note)
+            viewModel.upsert(note)
+        }
+        bottomAppBar.setNavigationOnClickListener {
+            callback?.onArchiveScreenSelected()
         }
     }
 
-    override fun onDeleteNoteClick(note: Note) {
-        notesViewModel.deleteNote(note)
+    override fun onDeleteNoteClicked(note: Note) {
+        viewModel.deleteNote(note)
+
     }
 
     companion object {
-        private const val REQUEST_KEY = "requestKey"
-
-        fun newInstance(): NotesFragment {
-            return NotesFragment()
-        }
+        private const val ACTIVE_REQUEST_KEY = "activeRequestKey"
     }
 
     interface Callback {
         fun onNoteSelected(id: UUID)
+        fun onArchiveScreenSelected()
     }
+
 }

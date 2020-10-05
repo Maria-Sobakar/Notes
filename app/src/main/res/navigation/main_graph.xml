@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_graph"
+    app:startDestination="@id/activeNotesFragment">
+    <fragment
+        android:id="@+id/activeNotesFragment"
+        android:name="com.marias.android.notes.screens.activeNotes.ActiveNotesFragment"
+        android:label="ActiveNotesFragment" />
+    <fragment
+        android:id="@+id/archiveNotesFragment"
+        android:name="com.marias.android.notes.screens.archiveNotes.ArchiveNotesFragment"
+        android:label="ArchiveNotesFragment" />
+    <fragment
+        android:id="@+id/noteFragment"
+        android:name="com.marias.android.notes.screens.note.NoteFragment"
+        android:label="NoteFragment" />
+</navigation>
