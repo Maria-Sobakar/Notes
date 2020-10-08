@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.PopupMenu
 import android.widget.TextView
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.marias.android.notes.R
 import com.marias.android.notes.data.dto.Note
@@ -14,6 +15,7 @@ import java.lang.RuntimeException
 
 class ActiveNotesAdapter(val context: Context?, var noteList: List<Note>, val listener: Listener) :
     RecyclerView.Adapter<ActiveNotesAdapter.ActiveNotesHolder>() {
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ActiveNotesHolder {
         val inflater = LayoutInflater.from(context)
@@ -23,7 +25,7 @@ class ActiveNotesAdapter(val context: Context?, var noteList: List<Note>, val li
     }
 
     override fun onBindViewHolder(holder: ActiveNotesHolder, position: Int) {
-        holder.bind(noteList[position])
+            holder.bind(noteList[position])
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -38,7 +40,7 @@ class ActiveNotesAdapter(val context: Context?, var noteList: List<Note>, val li
 
         init {
             itemView.setOnClickListener {
-           (context as ActiveNotesFragment.Callback?)?.onNoteSelected(note.id)
+                (context as ActiveNotesFragment.Callback?)?.onNoteSelected(note.id)
             }
             val noteIbDelete = itemView.findViewById<ImageButton>(R.id.noteIbDelete)
             noteIbDelete.setOnClickListener {
