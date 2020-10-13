@@ -9,5 +9,9 @@
     <string name="to_archive_note">Переместить в архив</string>
     <string name="archive_button">Архив</string>
     <string name="from_archive_note">Разархивировать</string>
-<string name="no_notes">Здесь пока нет заметок…</string>
+    <string name="no_notes">Здесь пока нет заметок…</string>
+    <string name="pin">Закрепить</string>
+    <string name="unpin">Открепить</string>
+    <string name="pinned">Закрепленные</string>
+    <string name="other">Другие</string>
 </resources>

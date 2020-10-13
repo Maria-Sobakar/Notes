@@ -23,7 +23,7 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
 
     private val viewModel: NoteViewModel by viewModels {
         val id = arguments?.getSerializable(ARG_ID) as UUID
-        NoteViewModel.NoteViewModelFactory(requireContext(), id)
+        NoteViewModel.NoteViewModelFactory( id)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

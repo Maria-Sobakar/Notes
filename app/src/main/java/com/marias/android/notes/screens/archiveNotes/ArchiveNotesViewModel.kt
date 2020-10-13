@@ -10,10 +10,10 @@ import com.marias.android.notes.data.repository.NoteRepository
 import com.marias.android.notes.screens.activeNotes.ActiveNotesViewModel
 import kotlinx.coroutines.launch
 
-class ArchiveNotesViewModel(context: Context): ViewModel() {
+class ArchiveNotesViewModel: ViewModel() {
 
     val notesLiveData = MutableLiveData<List<Note>>()
-    private val noteRepository = NoteRepository(context)
+    private val noteRepository = NoteRepository()
 
     init {
         viewModelScope.launch {
@@ -34,10 +34,5 @@ class ArchiveNotesViewModel(context: Context): ViewModel() {
             noteRepository.deleteNote(note)
             getNotes()
         }
-    }
-}
-class ArchiveNotesViewModelFactory(val context: Context) : ViewModelProvider.Factory {
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return ArchiveNotesViewModel(context) as T
     }
 }

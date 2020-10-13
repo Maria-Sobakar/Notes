@@ -3,4 +3,7 @@
     <item
         android:id="@+id/notes_screen_delete_note"
         android:title="@string/delete_note" />
+    <item
+        android:id="@+id/note_screen_pin_note"
+        android:title="@string/pin"/>
 </menu>

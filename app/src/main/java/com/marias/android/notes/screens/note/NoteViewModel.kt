@@ -10,16 +10,16 @@ import com.marias.android.notes.data.dto.Note
 import kotlinx.coroutines.launch
 import java.util.*
 
-class NoteViewModel(val context: Context, val id: UUID) : ViewModel() {
+class NoteViewModel(val id: UUID) : ViewModel() {
 
-    private val noteRepository = NoteRepository(context)
+    private val noteRepository = NoteRepository()
     private lateinit var note: Note
     val noteLiveData by lazy {
         val liveData = MutableLiveData<Note>()
         viewModelScope.launch {
             val note = noteRepository.getNote(id)
-            archivedState.value = note.archived
             this@NoteViewModel.note = note
+            archivedState.value = note.archived
             liveData.value = note
         }
         return@lazy liveData
@@ -64,9 +64,9 @@ class NoteViewModel(val context: Context, val id: UUID) : ViewModel() {
         updateNote()
     }
 
-    class NoteViewModelFactory(val context: Context, val id: UUID) : ViewModelProvider.Factory {
+    class NoteViewModelFactory( val id: UUID) : ViewModelProvider.Factory {
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            return NoteViewModel(context, id) as T
+            return NoteViewModel(id) as T
         }
     }
 }

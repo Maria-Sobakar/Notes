@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -21,9 +20,7 @@ import kotlinx.android.synthetic.main.fragment_notes.*
 
 class ArchiveNotesFragment : Fragment(R.layout.fragment_notes), ArchiveNotesAdapter.Listener {
 
-    private val viewModel: ArchiveNotesViewModel by viewModels{
-        ArchiveNotesViewModelFactory(requireContext())
-    }
+    private val viewModel: ArchiveNotesViewModel by viewModels()
     private lateinit var adapter: ArchiveNotesAdapter
     private var callback: ActiveNotesFragment.Callback? = null
 
