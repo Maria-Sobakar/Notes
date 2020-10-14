@@ -5,6 +5,7 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.setFragmentResultListener
@@ -48,6 +49,7 @@ class ArchiveNotesFragment : Fragment(R.layout.fragment_notes), ArchiveNotesAdap
         notesRecyclerView.layoutManager = GridLayoutManager(context, columnCount)
 
         viewModel.notesLiveData.observe(viewLifecycleOwner) { notes ->
+            noNotesTv.isVisible = notes.isEmpty()
             adapter.noteList = notes
             notesRecyclerView.adapter = adapter
         }
@@ -59,7 +61,6 @@ class ArchiveNotesFragment : Fragment(R.layout.fragment_notes), ArchiveNotesAdap
 
     companion object {
         private const val ARCHIVE_REQUEST_KEY = "archiveRequestKey"
-
     }
 }
 

@@ -1,7 +1,6 @@
 package com.marias.android.notes.screens.note
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -13,24 +12,22 @@ import java.util.*
 
 class NoteViewModel(val context: Context, val id: UUID) : ViewModel() {
 
+    private val noteRepository = NoteRepository(context)
+    private lateinit var note: Note
     val noteLiveData by lazy {
         val liveData = MutableLiveData<Note>()
         viewModelScope.launch {
             val note = noteRepository.getNote(id)
-            isNoteArchivedLiveData.value = note.archived
+            archivedState.value = note.archived
             this@NoteViewModel.note = note
             liveData.value = note
         }
         return@lazy liveData
     }
-
     val closeLiveData = MutableLiveData<Boolean>()
-    private val noteRepository = NoteRepository(context)
-    val isNoteArchivedLiveData = MutableLiveData<Boolean>()
-    private lateinit var note: Note
+    val archivedState = MutableLiveData<Boolean>()
 
     private fun updateNote() {
-
         viewModelScope.launch {
             if (note.title.isEmpty() && note.text.isEmpty()) {
                 noteRepository.deleteNote(note)
