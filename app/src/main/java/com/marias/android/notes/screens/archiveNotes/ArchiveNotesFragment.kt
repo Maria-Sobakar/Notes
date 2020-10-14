@@ -14,6 +14,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.marias.android.notes.R
 import com.marias.android.notes.data.dto.Note
+import com.marias.android.notes.data.repository.NoteRepository
 
 import com.marias.android.notes.screens.activeNotes.ActiveNotesFragment
 
@@ -23,7 +24,7 @@ import kotlinx.android.synthetic.main.fragment_notes.*
 class ArchiveNotesFragment : Fragment(R.layout.fragment_notes), ArchiveNotesAdapter.Listener {
 
     private val viewModel: ArchiveNotesViewModel by viewModels{
-        ArchiveNotesViewModelFactory(requireContext())
+        ArchiveNotesViewModelFactory(NoteRepository())
     }
     private lateinit var adapter: ArchiveNotesAdapter
     private var callback: ActiveNotesFragment.Callback? = null

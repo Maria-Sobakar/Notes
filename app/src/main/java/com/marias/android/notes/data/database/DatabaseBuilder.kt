@@ -19,7 +19,6 @@ object DatabaseBuilder {
             context.applicationContext,
             NoteDatabase::class.java,
             DATABASE_NAME
-        ).addMigrations(migration_1_2)
-            .build()
+        ).build()
 
 }

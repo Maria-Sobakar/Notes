@@ -1,6 +1,4 @@
 package com.marias.android.notes.screens.note
-
-import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -10,24 +8,26 @@ import com.marias.android.notes.data.dto.Note
 import kotlinx.coroutines.launch
 import java.util.*
 
-class NoteViewModel(val context: Context, val id: UUID) : ViewModel() {
+class NoteViewModel(private val noteRepository: NoteRepository, val id: UUID) : ViewModel() {
 
-    private val noteRepository = NoteRepository(context)
-    private lateinit var note: Note
+    lateinit var note: Note
     val noteLiveData by lazy {
         val liveData = MutableLiveData<Note>()
         viewModelScope.launch {
             val note = noteRepository.getNote(id)
-            archivedState.value = note.archived
+
+            archivedState.value = note.isArchived
             this@NoteViewModel.note = note
             liveData.value = note
         }
         return@lazy liveData
     }
     val closeLiveData = MutableLiveData<Boolean>()
+
     val archivedState = MutableLiveData<Boolean>()
 
-    private fun updateNote() {
+     fun updateNote() {
+
         viewModelScope.launch {
             if (note.title.isEmpty() && note.text.isEmpty()) {
                 noteRepository.deleteNote(note)
@@ -55,18 +55,20 @@ class NoteViewModel(val context: Context, val id: UUID) : ViewModel() {
     }
 
     fun toArchive() {
-        note.archived = true
+        note.isArchived = true
         updateNote()
+        archivedState.value = note.isArchived
     }
 
     fun fromArchive() {
-        note.archived = false
+        note.isArchived = false
         updateNote()
+        archivedState.value = note.isArchived
     }
 
-    class NoteViewModelFactory(val context: Context, val id: UUID) : ViewModelProvider.Factory {
+    class NoteViewModelFactory(private val noteRepository: NoteRepository, val id: UUID) : ViewModelProvider.Factory {
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            return NoteViewModel(context, id) as T
+            return NoteViewModel(noteRepository, id) as T
         }
     }
 }

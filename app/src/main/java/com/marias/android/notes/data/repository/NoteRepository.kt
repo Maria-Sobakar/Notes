@@ -5,8 +5,7 @@ import com.marias.android.notes.data.database.DatabaseBuilder
 import com.marias.android.notes.data.dto.Note
 import java.util.*
 
-
-class NoteRepository constructor(context: Context) {
+class NoteRepository  {
     private val database = DatabaseBuilder.instance
     private val noteDAO = database.noteDAO()
 
