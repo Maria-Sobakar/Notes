@@ -6,10 +6,10 @@ import java.util.*
 
 @Dao
 interface NoteDAO {
-    @Query("SELECT * FROM note WHERE archived = 0 ORDER BY date DESC ")
+    @Query("SELECT * FROM note WHERE isArchived = 0 ORDER BY date DESC ")
     suspend fun getActiveNotes(): List<Note>
 
-    @Query("SELECT * FROM note WHERE archived = 1 ORDER BY date DESC ")
+    @Query("SELECT * FROM note WHERE isArchived = 1 ORDER BY date DESC ")
     suspend fun getArchivedNotes(): List<Note>
 
     @Query("SELECT * FROM note WHERE id=(:id)")

@@ -1,6 +1,5 @@
 package com.marias.android.notes.screens.note
 
-import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -10,7 +9,7 @@ import com.marias.android.notes.data.dto.Note
 import kotlinx.coroutines.launch
 import java.util.*
 
-class NoteViewModel(val context: Context, val id: UUID) : ViewModel() {
+class NoteViewModel(private val noteRepository: NoteRepository, val id: UUID) : ViewModel() {
 
     private val noteRepository = NoteRepository(context)
     private lateinit var note: Note
@@ -55,18 +54,20 @@ class NoteViewModel(val context: Context, val id: UUID) : ViewModel() {
     }
 
     fun toArchive() {
-        note.archived = true
+        note.isArchived = true
         updateNote()
+        archivedState.value = note.isArchived
     }
 
     fun fromArchive() {
-        note.archived = false
+        note.isArchived = false
         updateNote()
+        archivedState.value = note.isArchived
     }
 
-    class NoteViewModelFactory(val context: Context, val id: UUID) : ViewModelProvider.Factory {
+    class NoteViewModelFactory(private val noteRepository: NoteRepository, val id: UUID) : ViewModelProvider.Factory {
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            return NoteViewModel(context, id) as T
+            return NoteViewModel(noteRepository, id) as T
         }
     }
 }

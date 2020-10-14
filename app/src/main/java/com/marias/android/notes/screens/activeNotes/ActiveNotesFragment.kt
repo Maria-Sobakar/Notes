@@ -12,13 +12,14 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.marias.android.notes.R
 import com.marias.android.notes.data.dto.Note
+import com.marias.android.notes.data.repository.NoteRepository
 import kotlinx.android.synthetic.main.fragment_notes.*
 import java.util.*
 
 class ActiveNotesFragment : Fragment(R.layout.fragment_notes), Listener {
 
     private val viewModel: ActiveNotesViewModel by viewModels {
-        ActiveNotesViewModelFactory(requireContext())
+        ActiveNotesViewModelFactory(NoteRepository(requireContext()))
     }
     private lateinit var adapter: ActiveNotesAdapter
 
