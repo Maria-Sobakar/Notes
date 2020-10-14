@@ -12,13 +12,33 @@
         android:paddingBottom="59dp"
         tools:itemCount="20"
         tools:listitem="@layout/item_note" />
-    <TextView
+
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:visibility="gone"
-        android:text="@string/no_notes"
-        android:id="@+id/noNotesTv" />
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/noNotesIv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_no_note"
+            android:scaleX="1.7"
+            android:scaleY="1.7"
+            />
+
+        <TextView
+            android:id="@+id/noNotesTv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/no_active_notes"
+            android:layout_marginTop="24dp"
+            android:visibility="gone"/>
+    </LinearLayout>
+
 
     <com.google.android.material.bottomappbar.BottomAppBar
         android:id="@+id/bottomAppBar"
@@ -26,8 +46,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        
-        app:navigationIcon="@drawable/ic_archive"/>
+
+        app:navigationIcon="@drawable/ic_archive" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addNoteFloatingActionButton"
