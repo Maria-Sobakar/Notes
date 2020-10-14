@@ -1,27 +1,18 @@
 package com.marias.android.notes.screens.archiveNotes
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.marias.android.notes.data.dto.Note
-import com.marias.android.notes.data.repository.NoteRepository
-import com.marias.android.notes.screens.activeNotes.TestCoroutineRule
+import com.marias.android.notes.screens.BaseTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before
 
-import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito.*
 
 @ExperimentalCoroutinesApi
-class ArchiveNotesViewModelTest {
-    private val mockRepository = mock(NoteRepository::class.java)
+class ArchiveNotesViewModelTest: BaseTest() {
+
     private lateinit var viewModel: ArchiveNotesViewModel
-
-    @get:Rule
-    val executorRule = InstantTaskExecutorRule()
-
-    @get:Rule
-    val testCoroutineRule = TestCoroutineRule()
 
     @Before
     fun setUp() {

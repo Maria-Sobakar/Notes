@@ -1,33 +1,22 @@
 package com.marias.android.notes.screens.activeNotes
 
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 
 import com.marias.android.notes.data.dto.Note
-import com.marias.android.notes.data.repository.NoteRepository
+import com.marias.android.notes.screens.BaseTest
 import com.marias.android.notes.utils.Event
 import kotlinx.coroutines.*
-import kotlinx.coroutines.test.*
 
 import org.junit.*
-import org.junit.rules.TestRule
-import org.junit.runner.Description
-import org.junit.runners.model.Statement
 
 import org.mockito.Mockito.*
 import java.util.*
 
 @ExperimentalCoroutinesApi
-class ActiveNotesViewModelTest {
-    private val mockRepository = mock(NoteRepository::class.java)
+class ActiveNotesViewModelTest: BaseTest() {
+
     private lateinit var viewModel: ActiveNotesViewModel
-
-    @get:Rule
-    val executorRule = InstantTaskExecutorRule()
-
-    @get:Rule
-    val testCoroutineRule = TestCoroutineRule()
 
     @Before
     fun setUp() {
@@ -35,10 +24,22 @@ class ActiveNotesViewModelTest {
     }
 
     @Test
-    fun testGetNoteValue() {
+    fun testGetNoteValueEmptyList() {
         testCoroutineRule.runBlockingTest {
             val noteList = mutableListOf<Note>()
-            `when`(mockRepository.getArchivedNotes()).thenReturn(noteList)
+            `when`(mockRepository.getActiveNotes()).thenReturn(noteList)
+            val observer = mock(Observer::class.java) as Observer<List<Note>>
+            viewModel.notesLiveData.observeForever(observer)
+            viewModel.getNotes()
+            verify(observer).onChanged(noteList)
+        }
+    }
+    @Test
+    fun testGetNoteValueWithElement() {
+        testCoroutineRule.runBlockingTest {
+            val noteList = mutableListOf<Note>()
+            noteList.add(Note())
+            `when`(mockRepository.getActiveNotes()).thenReturn(noteList)
             val observer = mock(Observer::class.java) as Observer<List<Note>>
             viewModel.notesLiveData.observeForever(observer)
             viewModel.getNotes()
@@ -58,24 +59,4 @@ class ActiveNotesViewModelTest {
     }
 }
 
-@ExperimentalCoroutinesApi
-class TestCoroutineRule : TestRule {
-    private val testCoroutineDispatcher = TestCoroutineDispatcher()
-    private val testCoroutineScope = TestCoroutineScope(testCoroutineDispatcher)
 
-    override fun apply(base: Statement?, description: Description?): Statement {
-        return object : Statement() {
-            override fun evaluate() {
-                Dispatchers.setMain(testCoroutineDispatcher)
-
-                base?.evaluate()
-
-                Dispatchers.resetMain()
-                testCoroutineDispatcher.cleanupTestCoroutines()
-            }
-        }
-    }
-
-    fun runBlockingTest(block: suspend TestCoroutineScope.() -> Unit) =
-        testCoroutineScope.runBlockingTest { block() }
-}
