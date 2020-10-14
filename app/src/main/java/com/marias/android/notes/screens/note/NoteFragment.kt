@@ -69,7 +69,7 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
         toArchiveItem = menu.findItem(R.id.note_screen_to_archive)
         fromArchiveItem = menu.findItem(R.id.note_screen_from_archive)
 
-        viewModel.isNoteArchivedLiveData.observe(viewLifecycleOwner) { value ->
+        viewModel.archivedState.observe(viewLifecycleOwner) { value ->
             if (value) {
                 toArchiveItem.isVisible = false
                 fromArchiveItem.isVisible = true

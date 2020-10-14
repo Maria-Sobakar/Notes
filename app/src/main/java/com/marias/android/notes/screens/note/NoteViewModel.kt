@@ -11,22 +11,22 @@ import java.util.*
 
 class NoteViewModel(private val noteRepository: NoteRepository, val id: UUID) : ViewModel() {
 
+    private val noteRepository = NoteRepository(context)
+    private lateinit var note: Note
     val noteLiveData by lazy {
         val liveData = MutableLiveData<Note>()
         viewModelScope.launch {
             val note = noteRepository.getNote(id)
-            isNoteArchivedLiveData.value = note.isArchived
+            archivedState.value = note.archived
             this@NoteViewModel.note = note
             liveData.value = note
         }
         return@lazy liveData
     }
-
     val closeLiveData = MutableLiveData<Boolean>()
-    val isNoteArchivedLiveData = MutableLiveData<Boolean>()
-    lateinit var note: Note
+    val archivedState = MutableLiveData<Boolean>()
 
-     fun updateNote() {
+    private fun updateNote() {
         viewModelScope.launch {
             if (note.title.isEmpty() && note.text.isEmpty()) {
                 noteRepository.deleteNote(note)
@@ -56,13 +56,13 @@ class NoteViewModel(private val noteRepository: NoteRepository, val id: UUID) : 
     fun toArchive() {
         note.isArchived = true
         updateNote()
-        isNoteArchivedLiveData.value = note.isArchived
+        archivedState.value = note.isArchived
     }
 
     fun fromArchive() {
         note.isArchived = false
         updateNote()
-        isNoteArchivedLiveData.value = note.isArchived
+        archivedState.value = note.isArchived
     }
 
     class NoteViewModelFactory(private val noteRepository: NoteRepository, val id: UUID) : ViewModelProvider.Factory {

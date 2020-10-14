@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.View
+import android.widget.TextView
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
@@ -44,6 +46,7 @@ class ActiveNotesFragment : Fragment(R.layout.fragment_notes), Listener {
         notesRecyclerView.layoutManager = GridLayoutManager(context, columnCount)
 
         viewModel.notesLiveData.observe(viewLifecycleOwner) { notes ->
+            noNotesTv.isVisible = notes.isEmpty()
             adapter.noteList = notes
             notesRecyclerView.adapter = adapter
         }
@@ -65,7 +68,6 @@ class ActiveNotesFragment : Fragment(R.layout.fragment_notes), Listener {
 
     override fun onDeleteNoteClicked(note: Note) {
         viewModel.deleteNote(note)
-
     }
 
     companion object {
@@ -76,5 +78,4 @@ class ActiveNotesFragment : Fragment(R.layout.fragment_notes), Listener {
         fun onNoteSelected(id: UUID)
         fun onArchiveScreenSelected()
     }
-
 }
