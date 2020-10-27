@@ -79,11 +79,12 @@ class ActiveNotesViewModel(val context: Context) : ViewModel() {
             getAllNotes()
         }
     }
-}
-
-class ActiveNotesViewModelFactory(val context: Context):ViewModelProvider.Factory{
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return ActiveNotesViewModel(context) as T
+    class ActiveNotesViewModelFactory(val context: Context):ViewModelProvider.Factory{
+        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+            return ActiveNotesViewModel(context) as T
+        }
     }
 }
+
+
 

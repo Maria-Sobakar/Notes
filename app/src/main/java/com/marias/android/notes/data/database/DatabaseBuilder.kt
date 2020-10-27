@@ -21,5 +21,4 @@ object DatabaseBuilder {
             DATABASE_NAME
         ).addMigrations(migration_1_2)
             .build()
-
 }

@@ -17,7 +17,7 @@ import java.util.*
 class ActiveNotesFragment : Fragment(R.layout.fragment_notes), Listener {
 
     private val viewModel: ActiveNotesViewModel by viewModels {
-        ActiveNotesViewModelFactory(requireContext())
+        ActiveNotesViewModel.ActiveNotesViewModelFactory(requireContext())
     }
     private lateinit var notesAdapter: ActiveNotesAdapter
     private var callback: Callback? = null
