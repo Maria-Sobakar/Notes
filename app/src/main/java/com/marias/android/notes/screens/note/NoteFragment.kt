@@ -13,6 +13,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation
 import com.marias.android.notes.R
 import com.marias.android.notes.data.dto.toFormat
+import com.marias.android.notes.data.repository.NoteRepository
 import kotlinx.android.synthetic.main.fragment_note.*
 import java.util.*
 
@@ -24,7 +25,7 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
 
     private val viewModel: NoteViewModel by viewModels {
         val id = arguments?.getSerializable(ARG_ID) as UUID
-        NoteViewModel.NoteViewModelFactory(requireContext(), id)
+        NoteViewModel.NoteViewModelFactory(NoteRepository(requireContext()), id)
     }
 
     override fun onAttach(context: Context) {

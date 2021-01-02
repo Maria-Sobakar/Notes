@@ -1,6 +1,5 @@
 package com.marias.android.notes.screens.note
 
-import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -55,14 +54,17 @@ class NoteViewModel(val context: Context, val id: UUID) : ViewModel() {
     }
 
     fun toArchive() {
-        note.archived = true
+        note.isArchived = true
         updateNote()
+        archivedState.value = note.isArchived
     }
 
     fun fromArchive() {
-        note.archived = false
+        note.isArchived = false
         updateNote()
+        archivedState.value = note.isArchived
     }
+
 
     fun getNoteText() = note.text
 

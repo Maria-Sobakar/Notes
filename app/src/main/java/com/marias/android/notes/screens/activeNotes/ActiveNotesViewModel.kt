@@ -12,11 +12,10 @@ import com.marias.android.notes.utils.Event
 import kotlinx.coroutines.launch
 import java.util.*
 
-class ActiveNotesViewModel(context: Context) : ViewModel() {
+class ActiveNotesViewModel(private val noteRepository: NoteRepository) : ViewModel() {
 
     val openNoteLiveData = MutableLiveData<Event<UUID>>()
     val notesLiveData = MutableLiveData<List<Note>>()
-    private val noteRepository = NoteRepository(context)
 
     init {
         viewModelScope.launch {
@@ -46,8 +45,8 @@ class ActiveNotesViewModel(context: Context) : ViewModel() {
         }
     }
 }
-class ActiveNotesViewModelFactory(val context: Context) : ViewModelProvider.Factory {
+class ActiveNotesViewModelFactory(val noteRepository: NoteRepository) : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return ActiveNotesViewModel(context) as T
+        return ActiveNotesViewModel(noteRepository) as T
     }
 }
