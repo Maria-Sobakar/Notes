@@ -5,6 +5,7 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
@@ -46,7 +47,10 @@ class ActiveNotesFragment : Fragment(R.layout.fragment_notes), Listener {
         notesRecyclerView.layoutManager = GridLayoutManager(context, columnCount)
 
         viewModel.notesLiveData.observe(viewLifecycleOwner) { notes ->
+            noNotesIv.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.ic_no_note))
+            noNotesTv.setText(R.string.no_active_notes)
             noNotesTv.isVisible = notes.isEmpty()
+            noNotesIv.isVisible = notes.isEmpty()
             adapter.noteList = notes
             notesRecyclerView.adapter = adapter
         }

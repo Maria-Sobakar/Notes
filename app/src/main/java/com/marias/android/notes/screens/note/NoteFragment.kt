@@ -1,6 +1,6 @@
 package com.marias.android.notes.screens.note
 
-
+import android.content.Context
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -21,10 +21,16 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
 
     private lateinit var toArchiveItem: MenuItem
     private lateinit var fromArchiveItem: MenuItem
+    private var callback: MenuCallback? = null
 
     private val viewModel: NoteViewModel by viewModels {
         val id = arguments?.getSerializable(ARG_ID) as UUID
         NoteViewModel.NoteViewModelFactory(NoteRepository(requireContext()), id)
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        callback = context as MenuCallback?
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,7 +51,8 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
 
         viewModel.closeLiveData.observe(viewLifecycleOwner) { value ->
             if (value) {
-               val navController = Navigation.findNavController(requireActivity(), R.id.navigation_host_fragment)
+                val navController =
+                    Navigation.findNavController(requireActivity(), R.id.navigation_host_fragment)
                 navController.popBackStack()
             }
         }
@@ -98,6 +105,10 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
                 fromArchiveItem.isVisible = false
                 true
             }
+            R.id.note_screen_create_notification -> {
+                callback?.onCreateNotificationSelected(viewModel.getNoteText())
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -106,5 +117,9 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
         const val ARG_ID = "noteId"
         private const val ACTIVE_REQUEST_KEY = "activeRequestKey"
         private const val ARCHIVE_REQUEST_KEY = "archiveRequestKey"
+    }
+
+    interface MenuCallback {
+        fun onCreateNotificationSelected(notificationText: String)
     }
 }
