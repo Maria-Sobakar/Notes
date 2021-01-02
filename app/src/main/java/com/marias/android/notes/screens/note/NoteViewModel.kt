@@ -1,4 +1,5 @@
 package com.marias.android.notes.screens.note
+import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -8,8 +9,9 @@ import com.marias.android.notes.data.dto.Note
 import kotlinx.coroutines.launch
 import java.util.*
 
-class NoteViewModel(private val noteRepository: NoteRepository, val id: UUID) : ViewModel() {
+class NoteViewModel(val context: Context, val id: UUID) : ViewModel() {
 
+    private val noteRepository = NoteRepository()
     lateinit var note: Note
     val noteLiveData by lazy {
         val liveData = MutableLiveData<Note>()
@@ -66,9 +68,12 @@ class NoteViewModel(private val noteRepository: NoteRepository, val id: UUID) : 
         archivedState.value = note.isArchived
     }
 
-    class NoteViewModelFactory(private val noteRepository: NoteRepository, val id: UUID) : ViewModelProvider.Factory {
+    fun getNoteText() = note.text
+
+
+    class NoteViewModelFactory(val context: Context, val id: UUID) : ViewModelProvider.Factory {
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            return NoteViewModel(noteRepository, id) as T
+            return NoteViewModel(context, id) as T
         }
     }
 }

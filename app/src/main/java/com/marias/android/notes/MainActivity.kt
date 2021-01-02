@@ -7,9 +7,10 @@ import androidx.navigation.Navigation
 import com.marias.android.notes.screens.activeNotes.ActiveNotesFragment
 import com.marias.android.notes.screens.archiveNotes.ArchiveNotesFragment
 import com.marias.android.notes.screens.note.NoteFragment
+import com.marias.android.notes.screens.notification.NotificationFragment
 import java.util.*
 
-class MainActivity : AppCompatActivity(R.layout.activity_main), ActiveNotesFragment.Callback {
+class MainActivity : AppCompatActivity(R.layout.activity_main), ActiveNotesFragment.Callback, NoteFragment.MenuCallback {
     private lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,5 +28,12 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), ActiveNotesFragm
 
     override fun onArchiveScreenSelected() {
         navController.navigate(R.id.archiveNotesFragment)
+    }
+
+    override fun onCreateNotificationSelected(notificationText:String) {
+        val arg = Bundle().apply {
+            putString(NotificationFragment.ARG_TEXT_ID, notificationText)
+        }
+        navController.navigate(R.id.notificationFragment, arg)
     }
 }
