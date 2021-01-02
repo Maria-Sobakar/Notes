@@ -15,4 +15,12 @@
         android:id="@+id/noteFragment"
         android:name="com.marias.android.notes.screens.note.NoteFragment"
         android:label="NoteFragment" />
+    <fragment
+        android:id="@+id/notificationFragment"
+        android:name="com.marias.android.notes.screens.notification.NotificationFragment"
+        android:label="NotificationFragment" />
+    <fragment
+        android:id="@+id/datePickerFragment"
+        android:name="com.marias.android.notes.screens.notification.DatePickerFragment"
+        android:label="DatePickerFragment" />
 </navigation>

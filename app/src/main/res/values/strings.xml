@@ -11,4 +11,8 @@
     <string name="from_archive_note">Разархивировать</string>
     <string name="no_active_notes">Здесь появятся ваши заметки </string>
     <string name="no_archive_notes">В архиве пока нет заметок…</string>
+    <string name="input_notification_text">Введите текст напоминания</string>
+    <string name="create_notification">Добавить напоминание</string>
+    <string name="choose_date">Виберите дату</string>
+    <string name="choose_time">Виберите время</string>
 </resources>

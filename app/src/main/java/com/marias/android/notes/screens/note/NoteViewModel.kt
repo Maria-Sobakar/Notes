@@ -64,6 +64,8 @@ class NoteViewModel(val context: Context, val id: UUID) : ViewModel() {
         updateNote()
     }
 
+    fun getNoteText() = note.text
+
     class NoteViewModelFactory(val context: Context, val id: UUID) : ViewModelProvider.Factory {
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
             return NoteViewModel(context, id) as T
