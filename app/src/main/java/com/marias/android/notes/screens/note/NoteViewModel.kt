@@ -17,7 +17,6 @@ class NoteViewModel(val context: Context, val id: UUID) : ViewModel() {
         val liveData = MutableLiveData<Note>()
         viewModelScope.launch {
             val note = noteRepository.getNote(id)
-
             archivedState.value = note.isArchived
             this@NoteViewModel.note = note
             liveData.value = note
@@ -25,11 +24,9 @@ class NoteViewModel(val context: Context, val id: UUID) : ViewModel() {
         return@lazy liveData
     }
     val closeLiveData = MutableLiveData<Boolean>()
-
     val archivedState = MutableLiveData<Boolean>()
 
-     fun updateNote() {
-
+    private fun updateNote() {
         viewModelScope.launch {
             if (note.title.isEmpty() && note.text.isEmpty()) {
                 noteRepository.deleteNote(note)
@@ -69,7 +66,6 @@ class NoteViewModel(val context: Context, val id: UUID) : ViewModel() {
     }
 
     fun getNoteText() = note.text
-
 
     class NoteViewModelFactory(val context: Context, val id: UUID) : ViewModelProvider.Factory {
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
