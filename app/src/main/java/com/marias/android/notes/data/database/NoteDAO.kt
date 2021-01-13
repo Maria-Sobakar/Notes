@@ -6,8 +6,12 @@ import java.util.*
 
 @Dao
 interface NoteDAO {
-    @Query("SELECT * FROM note WHERE isArchived = 0 ORDER BY date DESC ")
-    suspend fun getActiveNotes(): List<Note>
+
+    @Query("SELECT * FROM note WHERE isArchived = 0 and isPinned = 0 ORDER BY date DESC ")
+    suspend fun getActiveNormalNotes(): MutableList<Note>
+
+    @Query("SELECT * FROM note WHERE isArchived = 0 and isPinned = 1 ORDER BY date DESC ")
+    suspend fun getActivePinnedNotes(): MutableList<Note>
 
     @Query("SELECT * FROM note WHERE isArchived = 1 ORDER BY date DESC ")
     suspend fun getArchivedNotes(): List<Note>
@@ -29,5 +33,4 @@ interface NoteDAO {
         val id = insert(note)
         if (id == -1L) update(note)
     }
-
 }

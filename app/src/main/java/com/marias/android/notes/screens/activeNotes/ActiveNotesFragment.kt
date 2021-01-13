@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.View
-import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -13,17 +12,16 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.marias.android.notes.R
 import com.marias.android.notes.data.dto.Note
-import com.marias.android.notes.data.repository.NoteRepository
+
 import kotlinx.android.synthetic.main.fragment_notes.*
 import java.util.*
 
 class ActiveNotesFragment : Fragment(R.layout.fragment_notes), Listener {
 
     private val viewModel: ActiveNotesViewModel by viewModels {
-        ActiveNotesViewModelFactory(NoteRepository())
+        ActiveNotesViewModel.ActiveNotesViewModelFactory(requireContext())
     }
-    private lateinit var adapter: ActiveNotesAdapter
-
+    private lateinit var notesAdapter: ActiveNotesAdapter
     private var callback: Callback? = null
 
     override fun onAttach(context: Context) {
@@ -34,7 +32,7 @@ class ActiveNotesFragment : Fragment(R.layout.fragment_notes), Listener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        adapter = ActiveNotesAdapter(context, emptyList(), this)
+        notesAdapter = ActiveNotesAdapter(context, mutableListOf(), this)
         setFragmentResultListener(ACTIVE_REQUEST_KEY) { _, _ ->
             viewModel.getNotes()
         }
@@ -44,15 +42,33 @@ class ActiveNotesFragment : Fragment(R.layout.fragment_notes), Listener {
         super.onViewCreated(view, savedInstanceState)
         val orientation = activity?.resources?.configuration?.orientation
         val columnCount = if (orientation == Configuration.ORIENTATION_PORTRAIT) 2 else 5
-        notesRecyclerView.layoutManager = GridLayoutManager(context, columnCount)
+        val grid = GridLayoutManager(context, columnCount)
+        grid.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(position: Int): Int {
+                return when (notesAdapter.getItemViewType(position)) {
+                    TYPE_HEADER -> {
+                        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+                            2
+                        } else 5
+                    }
+                    else -> 1
+                }
+            }
+        }
+        notesRecyclerView.layoutManager = grid
 
         viewModel.notesLiveData.observe(viewLifecycleOwner) { notes ->
+
             noNotesIv.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.ic_no_note))
             noNotesTv.setText(R.string.no_active_notes)
             noNotesTv.isVisible = notes.isEmpty()
             noNotesIv.isVisible = notes.isEmpty()
-            adapter.noteList = notes
-            notesRecyclerView.adapter = adapter
+            notesAdapter.itemList = notes
+            notesRecyclerView.adapter = notesAdapter
+        }
+
+        viewModel.emptyScreenLiveData.observe(viewLifecycleOwner) { isEmpty ->
+            noNotesTv.isVisible = isEmpty
         }
 
         viewModel.openNoteLiveData.observe(viewLifecycleOwner) {
@@ -74,8 +90,14 @@ class ActiveNotesFragment : Fragment(R.layout.fragment_notes), Listener {
         viewModel.deleteNote(note)
     }
 
+    override fun onPinNoteClicked(note: Note) {
+        viewModel.pinNote(note)
+    }
+
     companion object {
         private const val ACTIVE_REQUEST_KEY = "activeRequestKey"
+        private const val TYPE_NOTE = 0
+        private const val TYPE_HEADER = 1
     }
 
     interface Callback {

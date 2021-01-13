@@ -12,7 +12,9 @@ data class Note(
     var title: String = "",
     var date: Date = Date(),
     var isArchived: Boolean = false,
-    var text: String = ""
-)
+    var text: String = "",
+    var isPinned:Boolean = false
+):Item()
+
     fun Date.toFormat():String = DateFormat.getDateInstance(DateFormat.MEDIUM).format(this)
 

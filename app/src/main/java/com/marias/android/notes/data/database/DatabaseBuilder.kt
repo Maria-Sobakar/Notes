@@ -20,5 +20,4 @@ object DatabaseBuilder {
             NoteDatabase::class.java,
             DATABASE_NAME
         ).build()
-
 }

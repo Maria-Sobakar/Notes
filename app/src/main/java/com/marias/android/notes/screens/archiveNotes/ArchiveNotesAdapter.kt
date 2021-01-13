@@ -49,7 +49,7 @@ class ArchiveNotesAdapter(
 
                 true
             }
-            val noteIbDelete = itemView.findViewById<ImageButton>(R.id.noteIbDelete)
+            val noteIbDelete = itemView.findViewById<ImageButton>(R.id.notePopupMenu)
             noteIbDelete.setOnClickListener {
                 showMenu(it, note)
             }
@@ -66,7 +66,7 @@ class ArchiveNotesAdapter(
 
         fun showMenu(anchor: View?, note: Note) {
             val popup = PopupMenu(context, anchor)
-            popup.menuInflater.inflate(R.menu.notes_screen_delete_note, popup.menu)
+            popup.menuInflater.inflate(R.menu.notes_screen_popup_menu, popup.menu)
             popup.show()
             popup.setOnMenuItemClickListener {
                 if (it.itemId == R.id.notes_screen_delete_note) {
