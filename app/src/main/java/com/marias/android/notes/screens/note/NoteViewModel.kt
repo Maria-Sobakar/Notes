@@ -1,7 +1,5 @@
 package com.marias.android.notes.screens.note
-
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -11,24 +9,24 @@ import com.marias.android.notes.data.dto.Note
 import kotlinx.coroutines.launch
 import java.util.*
 
-class NoteViewModel(val context: Context, val id: UUID) : ViewModel() {
+class NoteViewModel(val id: UUID) : ViewModel() {
 
+    private val noteRepository = NoteRepository()
+    private lateinit var note: Note
     val noteLiveData by lazy {
         val liveData = MutableLiveData<Note>()
         viewModelScope.launch {
             val note = noteRepository.getNote(id)
             this@NoteViewModel.note = note
+            archivedState.value = note.isArchived
             liveData.value = note
         }
         return@lazy liveData
     }
-
     val closeLiveData = MutableLiveData<Boolean>()
-    private val noteRepository = NoteRepository(context)
-    private lateinit var note: Note
+    val archivedState = MutableLiveData<Boolean>()
 
     private fun updateNote() {
-
         viewModelScope.launch {
             if (note.title.isEmpty() && note.text.isEmpty()) {
                 noteRepository.deleteNote(note)
@@ -55,9 +53,23 @@ class NoteViewModel(val context: Context, val id: UUID) : ViewModel() {
         }
     }
 
-    class NoteViewModelFactory(val context: Context, val id: UUID) : ViewModelProvider.Factory {
+    fun toArchive() {
+        note.isArchived = true
+        updateNote()
+        archivedState.value = note.isArchived
+    }
+
+    fun fromArchive() {
+        note.isArchived = false
+        updateNote()
+        archivedState.value = note.isArchived
+    }
+
+    fun getNoteText() = note.text
+
+    class NoteViewModelFactory( val id: UUID) : ViewModelProvider.Factory {
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            return NoteViewModel(context, id) as T
+            return NoteViewModel(id) as T
         }
     }
 }

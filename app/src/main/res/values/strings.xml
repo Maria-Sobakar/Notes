@@ -6,5 +6,21 @@
     <string name="note_text_hint">Напишите что - нибудь…</string>
     <string name="add_note">Добавить заметку</string>
     <string name="delete_note">Удалить</string>
-
+    <string name="to_archive_note">Переместить в архив</string>
+    <string name="archive_button">Архив</string>
+    <string name="from_archive_note">Разархивировать</string>
+<<<<<<< HEAD
+    <string name="no_active_notes">Здесь появятся ваши заметки </string>
+    <string name="no_archive_notes">В архиве пока нет заметок…</string>
+    <string name="input_notification_text">Введите текст напоминания</string>
+    <string name="create_notification">Добавить напоминание</string>
+    <string name="choose_date">Виберите дату</string>
+    <string name="choose_time">Виберите время</string>
+=======
+    <string name="no_notes">Здесь пока нет заметок…</string>
+    <string name="pin">Закрепить</string>
+    <string name="unpin">Открепить</string>
+    <string name="pinned">Закрепленные</string>
+    <string name="other">Другие</string>
+>>>>>>> pinnedNotes
 </resources>

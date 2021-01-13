@@ -11,12 +11,13 @@
         android:layout_height="wrap_content"
         android:hint="@string/note_title_hint"
         app:boxBackgroundColor="@color/colorWhite"
-        app:boxStrokeColor="@color/colorDarkOlive"
-        app:hintTextColor="@color/colorDarkOlive">
+        app:boxStrokeColor="@color/colorNormalOlive"
+        app:hintTextColor="@color/colorNormalOlive">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/noteETTitle"
             android:layout_width="match_parent"
+            android:inputType="text"
             android:layout_height="wrap_content" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -26,13 +27,14 @@
         android:layout_weight="1"
         android:hint="@string/note_text_hint"
         app:boxBackgroundColor="@color/colorWhite"
-        app:boxStrokeColor="@color/colorDarkOlive"
-        app:hintTextColor="@color/colorDarkOlive">
+        app:boxStrokeColor="@color/colorNormalOlive"
+        app:hintTextColor="@color/colorNormalOlive">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/noteETText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:inputType="text"
             android:layout_marginTop="8dp" />
     </com.google.android.material.textfield.TextInputLayout>
 

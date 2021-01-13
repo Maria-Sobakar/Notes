@@ -1,6 +1,6 @@
 package com.marias.android.notes.screens.note
 
-
+import android.content.Context
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -10,21 +10,33 @@ import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
+import androidx.navigation.Navigation
 import com.marias.android.notes.R
 import com.marias.android.notes.data.dto.toFormat
+import com.marias.android.notes.data.repository.NoteRepository
 import kotlinx.android.synthetic.main.fragment_note.*
 import java.util.*
 
 class NoteFragment : Fragment(R.layout.fragment_note) {
 
+    private lateinit var toArchiveItem: MenuItem
+    private lateinit var fromArchiveItem: MenuItem
+    private var callback: MenuCallback? = null
+
     private val viewModel: NoteViewModel by viewModels {
         val id = arguments?.getSerializable(ARG_ID) as UUID
-        NoteViewModel.NoteViewModelFactory(requireContext(), id)
+        NoteViewModel.NoteViewModelFactory( id)
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        callback = context as MenuCallback?
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setFragmentResult(REQUEST_KEY, Bundle())
+        setFragmentResult(ACTIVE_REQUEST_KEY, Bundle())
+        setFragmentResult(ARCHIVE_REQUEST_KEY, Bundle())
         setHasOptionsMenu(true)
     }
 
@@ -36,9 +48,12 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
             noteETText.setText(note.text)
             noteTVDate.text = note.date.toFormat()
         }
+
         viewModel.closeLiveData.observe(viewLifecycleOwner) { value ->
             if (value) {
-                activity?.supportFragmentManager?.popBackStack()
+                val navController =
+                    Navigation.findNavController(requireActivity(), R.id.navigation_host_fragment)
+                navController.popBackStack()
             }
         }
     }
@@ -56,27 +71,55 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.delete_note, menu)
+        inflater.inflate(R.menu.note_screen_menu, menu)
+
+        toArchiveItem = menu.findItem(R.id.note_screen_to_archive)
+        fromArchiveItem = menu.findItem(R.id.note_screen_from_archive)
+
+        viewModel.archivedState.observe(viewLifecycleOwner) { value ->
+            if (value) {
+                toArchiveItem.isVisible = false
+                fromArchiveItem.isVisible = true
+            } else {
+                toArchiveItem.isVisible = true
+                fromArchiveItem.isVisible = false
+            }
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.delete_note) {
-            viewModel.deleteNote()
+        return when (item.itemId) {
+            R.id.note_screen_delete_note -> {
+                viewModel.deleteNote()
+                true
+            }
+            R.id.note_screen_to_archive -> {
+                viewModel.toArchive()
+                toArchiveItem.isVisible = false
+                fromArchiveItem.isVisible = true
+                true
+            }
+            R.id.note_screen_from_archive -> {
+                viewModel.fromArchive()
+                toArchiveItem.isVisible = true
+                fromArchiveItem.isVisible = false
+                true
+            }
+            R.id.note_screen_create_notification -> {
+                callback?.onCreateNotificationSelected(viewModel.getNoteText())
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
-        return super.onOptionsItemSelected(item)
     }
 
     companion object {
-        private const val ARG_ID = "noteId"
-        private const val REQUEST_KEY = "requestKey"
+        const val ARG_ID = "noteId"
+        private const val ACTIVE_REQUEST_KEY = "activeRequestKey"
+        private const val ARCHIVE_REQUEST_KEY = "archiveRequestKey"
+    }
 
-        fun newInstance(id: UUID): NoteFragment {
-            return NoteFragment().apply {
-                arguments = Bundle().apply {
-                    putSerializable(ARG_ID, id)
-                }
-
-            }
-        }
+    interface MenuCallback {
+        fun onCreateNotificationSelected(notificationText: String)
     }
 }

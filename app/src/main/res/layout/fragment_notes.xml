@@ -8,24 +8,61 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/notesRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingBottom="59dp"
+        android:layout_height="wrap_content"
+        android:paddingBottom="60dp"
         tools:itemCount="20"
         tools:listitem="@layout/item_note" />
 
+<<<<<<< HEAD
+
+    <LinearLayout
+=======
+    <TextView
+>>>>>>> pinnedNotes
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/noNotesIv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_no_note"
+            android:scaleX="1.7"
+            android:scaleY="1.7"
+            />
+
+        <TextView
+            android:id="@+id/noNotesTv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/no_active_notes"
+            android:layout_marginTop="24dp"
+            android:visibility="gone"/>
+    </LinearLayout>
+
+
     <com.google.android.material.bottomappbar.BottomAppBar
         android:id="@+id/bottomAppBar"
-        style="@style/Widget.MaterialComponents.BottomAppBar.Colored"
+        style="@style/Widget.MaterialComponents.BottomAppBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom" />
+        android:layout_gravity="bottom"
+<<<<<<< HEAD
+
+        app:navigationIcon="@drawable/ic_archive" />
+=======
+        app:navigationIcon="@drawable/ic_archive"/>
+>>>>>>> pinnedNotes
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addNoteFloatingActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        app:backgroundTint="@color/colorDarkOlive"
+        app:backgroundTint="@color/colorNormalOlive"
         app:layout_anchor="@id/bottomAppBar"
         app:srcCompat="@drawable/ic_add" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,35 +1,32 @@
-package com.marias.android.notes.screens.notes
+package com.marias.android.notes.screens.archiveNotes
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
-import android.view.OrientationEventListener
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.PopupMenu
 import android.widget.TextView
-import androidx.annotation.RestrictTo
 import androidx.recyclerview.widget.RecyclerView
 import com.marias.android.notes.R
 import com.marias.android.notes.data.dto.Note
-import com.marias.android.notes.data.repository.NoteRepository
-import kotlinx.android.synthetic.main.item_note.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
+import com.marias.android.notes.screens.activeNotes.ActiveNotesFragment
 
-class NoteAdapter(val context: Context?, var noteList: List<Note>, val listener: Listener) :
-    RecyclerView.Adapter<NoteAdapter.NoteHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteHolder {
+class ArchiveNotesAdapter(
+    val context: Context?,
+    var noteList: List<Note>,
+    val listener: Listener
+) : RecyclerView.Adapter<ArchiveNotesAdapter.ArchiveNotesHolder>() {
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArchiveNotesHolder {
         val inflater = LayoutInflater.from(context)
         val view = inflater.inflate(R.layout.item_note, parent, false)
 
-        return NoteHolder(view)
+        return ArchiveNotesHolder(view)
     }
 
-    override fun onBindViewHolder(holder: NoteHolder, position: Int) {
+    override fun onBindViewHolder(holder: ArchiveNotesHolder, position: Int) {
         holder.bind(noteList[position])
     }
 
@@ -39,20 +36,20 @@ class NoteAdapter(val context: Context?, var noteList: List<Note>, val listener:
 
     override fun getItemCount() = noteList.size
 
-    inner class NoteHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class ArchiveNotesHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         private lateinit var note: Note
 
         init {
             itemView.setOnClickListener {
-                (context as NotesFragment.Callback?)?.onNoteSelected(note.id)
+                (context as ActiveNotesFragment.Callback?)?.onNoteSelected(note.id)
             }
             itemView.setOnLongClickListener {
                 it.isSelected = true
 
                 true
             }
-            val noteIbDelete = itemView.findViewById<ImageButton>(R.id.noteIbDelete)
+            val noteIbDelete = itemView.findViewById<ImageButton>(R.id.notePopupMenu)
             noteIbDelete.setOnClickListener {
                 showMenu(it, note)
             }
@@ -69,19 +66,18 @@ class NoteAdapter(val context: Context?, var noteList: List<Note>, val listener:
 
         fun showMenu(anchor: View?, note: Note) {
             val popup = PopupMenu(context, anchor)
-            popup.menuInflater.inflate(R.menu.note_menu, popup.menu)
+            popup.menuInflater.inflate(R.menu.notes_screen_popup_menu, popup.menu)
             popup.show()
             popup.setOnMenuItemClickListener {
-                if (it.itemId == R.id.note_menu_delete) {
-                    listener.onDeleteNoteClick(note)
+                if (it.itemId == R.id.notes_screen_delete_note) {
+                    listener.onDeleteNoteClicked(note)
                     true
                 } else false
             }
 
         }
     }
-
     interface Listener {
-        fun onDeleteNoteClick(note: Note)
+        fun onDeleteNoteClicked(note: Note)
     }
 }
