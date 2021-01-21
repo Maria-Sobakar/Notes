@@ -13,16 +13,13 @@
         tools:itemCount="20"
         tools:listitem="@layout/item_note" />
 
-<<<<<<< HEAD
-
     <LinearLayout
-=======
-    <TextView
->>>>>>> pinnedNotes
+
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:gravity="center">
+        android:gravity="center"
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/noNotesIv"
@@ -50,12 +47,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-<<<<<<< HEAD
+
 
         app:navigationIcon="@drawable/ic_archive" />
-=======
-        app:navigationIcon="@drawable/ic_archive"/>
->>>>>>> pinnedNotes
+
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addNoteFloatingActionButton"
