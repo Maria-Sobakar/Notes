@@ -12,7 +12,7 @@ This project was creating during my learning different Android and Kotlin featur
  
 ## Technologies
 
- - Single activity
+ - Single activity аpplication
  - Room
  - Kotlin coroutines
  - Notification
